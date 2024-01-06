@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>dd09c5fe-271b-4085-9e79-75a22c210414</UserSecretsId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<WarningLevel>6</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<WarningLevel>6</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Migrations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.DotNet.Scaffolding.Shared" Version="6.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc" Version="6.0.0" />
+	</ItemGroup>
+
+</Project>

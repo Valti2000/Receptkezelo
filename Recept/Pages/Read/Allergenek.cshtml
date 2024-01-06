@@ -1,0 +1,57 @@
+﻿@page
+@model Recept.Pages.AllergenekModel
+@{
+    ViewData["Title"] = "Allergének";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a asp-page="/Create/CreateAllergen">Allergén Létrehozása</a>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Alapanyag</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var allergen in Model.Allergenek)
+        {
+            <tr>
+                <td>@allergen.Id</td>
+                <td>@allergen.Nev</td>
+                <td>
+                    @{
+                        var alapanyagok = await Model.AlapanyagokByAllergenIdAsync(allergen.Id);
+                    }
+                    @foreach (var alapanyag in alapanyagok)
+                    {
+                        <span>@alapanyag.Nev</span>
+                    }
+                </td>
+                <td>
+                    <a asp-page="/Update/UpdateAllergen" asp-route-id="@allergen.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteAllergen" asp-route-id="@allergen.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

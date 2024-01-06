@@ -1,0 +1,17 @@
+﻿@page
+@model Recept.Pages.Delete.DeleteCsoportModel
+@{
+    ViewData["Title"] = "Törlés";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h3>Biztosan törölni szeretnéd ezt a csoportot??</h3>
+    <div>
+        <form method="post">
+            <input type="submit" value="Igen" class="btn btn-danger" />
+            <a asp-page="/Read/Csoportok">Vissza a listához</a>
+        </form>
+    </div>
+</div>

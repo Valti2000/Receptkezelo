@@ -1,0 +1,41 @@
+﻿@page
+@model Recept.Pages.Create.CreateHozzavaloModel
+@{
+}
+
+@using Recept.Entity.Generated
+
+<h2>Hozzávaló Létrehozása</h2>
+
+<form method="post">
+    <div>
+        <label asp-for="Hozzavalo.Nev"></label>
+        <input asp-for="Hozzavalo.Nev" />
+    </div>
+    <div>
+        <label asp-for="Hozzavalo.Mennyiseg"></label>
+        <input asp-for="Hozzavalo.Mennyiseg" type="number" />
+    </div>
+    <div>
+        <label asp-for="Hozzavalo.Mertekegyseg"></label>
+        <input asp-for="Hozzavalo.Mertekegyseg" type="number" />
+    </div>
+
+    <div class="form-group">
+        <label>Alapanyag</label>
+        <select asp-for="Hozzavalo.AlapanyagId" asp-items="@(new SelectList(Model.AlapanyagLista, nameof(Alapanyag.Id), nameof(Alapanyag.Nev)))" class="form-control">
+        </select>
+        <span asp-validation-for="Hozzavalo.AlapanyagId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Csoport</label>
+        <select asp-for="Hozzavalo.CsoportId" asp-items="@(new SelectList(Model.CsoportLista, nameof(Csoport.Id), nameof(Csoport.Nev)))" class="form-control">
+        </select>
+        <span asp-validation-for="Hozzavalo.CsoportId" class="text-danger"></span>
+    </div>
+
+    <div>
+        <button type="submit">Létrehozás</button>
+    </div>
+</form>

@@ -1,0 +1,56 @@
+﻿@page
+@model Recept.Pages.Read.ReadCsoportModel
+@{
+}
+
+<h2>Csoportok</h2>
+
+<a asp-page="/Create/CreateCsoport">Csoport Létrehozása</a>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Hozzávalók</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var csoport in Model.Csoportok)
+        {
+            <tr>
+                <td>@csoport.Id</td>
+                <td>@csoport.Nev</td>
+                <td>
+                    <ul>
+                        @foreach (var hozzavalo in await Model.GetHozzavaloByCsoportIdAsync(csoport.Id))
+                        {
+                            <li>@(hozzavalo != null ? hozzavalo.Nev : "N/A")</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a asp-page="/Update/UpdateCsoport" asp-route-id="@csoport.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteCsoport" asp-route-id="@csoport.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

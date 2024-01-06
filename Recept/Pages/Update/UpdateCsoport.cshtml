@@ -1,0 +1,24 @@
+﻿@page 
+@model Recept.Pages.Update.UpdateCsoportModel
+@{
+}
+
+<h2>Update Csoport</h2>
+
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Csoport.Id" />
+
+    <div class="form-group">
+        <label asp-for="Csoport.Nev" class="control-label"></label>
+        <input asp-for="Csoport.Nev" class="form-control" />
+        <span asp-validation-for="Csoport.Nev" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>

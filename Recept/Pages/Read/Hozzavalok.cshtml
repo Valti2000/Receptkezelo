@@ -1,0 +1,57 @@
+﻿@page
+@model Recept.Pages.Read.HozzavalokModel
+@{
+}
+<h2>Hozzávalók Listája</h2>
+
+
+<p>
+    <a asp-page="/Create/CreateHozzavalo">Új Hozzávaló létrehozása</a>
+</p>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Mennyiség (db)</th>
+            <th>Mértékegység (ml)</th>
+            <th>Alapanyag</th>
+            <th>Csoport</th>
+            <th>Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hozzavalo in Model.Hozzavalok)
+        {
+            <tr>
+                <td>@hozzavalo.Id</td>
+                <td>@hozzavalo.Nev</td>
+                <td>@hozzavalo.Mennyiseg</td>
+                <td>@hozzavalo.Mertekegyseg</td>
+                <td>@await Model.GetAlapanyagbyId(hozzavalo.AlapanyagId)</td>
+                <td>@await Model.GetCsoportNevById(hozzavalo.CsoportId)</td>
+                <td>
+                    <a asp-page="/Edit/EditHozzavalo" asp-route-id="@hozzavalo.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteHozzavalo" asp-route-id="@hozzavalo.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

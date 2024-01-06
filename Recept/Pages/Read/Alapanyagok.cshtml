@@ -1,0 +1,60 @@
+﻿@page
+@model Recept.Pages.Read.AlapanyagokModel
+@{
+    ViewData["Title"] = "Alapanyagok listája";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <a asp-page="/Create/CreateAlapanyag">Alapanyag Létrehozása</a>
+
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Kategória</th>
+            <th>Allergén</th>
+            <th>Műveletek</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var alapanyag in Model.Alapanyagok)
+        {
+            <tr>
+                <td>@alapanyag.Id</td>
+                <td>@alapanyag.Nev</td>
+                <td>@(await Model.GetKategoriaNevById(alapanyag.KategoriaId) ?? "N/A")</td>
+                <td>
+                    <ul>
+                        @foreach (var allergen in await Model.GetAllergenByAlapanyagIdAsync(alapanyag.Id))
+                        {
+                            <li>@(allergen != null ? allergen.Nev : "N/A")</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a asp-page="/Update/UpdateAlapanyagok" asp-route-id="@alapanyag.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteAlapanyag" asp-route-id="@alapanyag.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

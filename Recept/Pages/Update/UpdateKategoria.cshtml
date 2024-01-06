@@ -1,0 +1,20 @@
+﻿@page
+@model Recept.Pages.Update.UpdateKategoriaModel
+@{
+    ViewData["Title"] = "Kategória frissítése";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Kategoria.Id" />
+
+    <div class="form-group">
+        <label asp-for="Kategoria.Nev"></label>
+        <input asp-for="Kategoria.Nev" class="form-control" />
+        <span asp-validation-for="Kategoria.Nev" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Frissítés</button>
+    <a asp-page="./Kategoriak" class="btn btn-secondary">Mégse</a>
+</form>

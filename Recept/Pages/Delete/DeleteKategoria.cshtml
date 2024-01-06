@@ -1,0 +1,15 @@
+﻿@page
+@model Recept.Pages.Delete.DeleteKategoriaModel
+@{
+    ViewData["Title"] = "Kategória törlése";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Biztosan törli a kategóriát: @Model.Kategoria.Nev?</h3>
+
+<form method="post">
+    <input type="hidden" asp-for="Kategoria.Id" />
+    <button type="submit" class="btn btn-danger">Törlés</button>
+    <a asp-page="./Kategoriak" class="btn btn-secondary">Mégse</a>
+</form>

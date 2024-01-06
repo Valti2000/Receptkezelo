@@ -1,0 +1,81 @@
+﻿@page
+@model CreateReceptModel
+@{
+}
+
+@using Recept.Entity.Generated
+
+<h2>Recept Létrehozása</h2>
+
+<form method="post">
+    <div>
+        <label asp-for="ReceptHozzavalo.Recept.Cim"></label>
+        <input asp-for="ReceptHozzavalo.Recept.Cim" />
+    </div>
+    <div>
+        <label asp-for="ReceptHozzavalo.Recept.Leiras"></label>
+        <textarea asp-for="ReceptHozzavalo.Recept.Leiras"></textarea>
+    </div>
+    <div>
+        <label asp-for="ReceptHozzavalo.Recept.ElokeszitesiIdo">Előkészítési idő (perc):</label>
+        <input asp-for="ReceptHozzavalo.Recept.ElokeszitesiIdo" type="number" min="0" />
+    </div>
+    <div>
+        <label asp-for="ReceptHozzavalo.Recept.FozesiIdo">Főzési idő (perc):</label>
+        <input asp-for="ReceptHozzavalo.Recept.FozesiIdo" type="number" min="0" />
+    </div>
+
+    <div class="form-group">
+        <label>Hozzávalók</label>
+        <select asp-for="ReceptHozzavalo.HozzavaloId" id="ReceptHozzavalo_HozzavaloId" asp-items="@(new SelectList(Model.HozzavaloLista, nameof(Hozzavalo.Id), nameof(Hozzavalo.Nev)))" class="form-control">
+            <option value="">Válasszon hozzávalót</option>
+        </select>
+        <button type="button" onclick="addSelectedHozzavalo()">Hozzávaló hozzáadása</button>
+        <ul id="selectedHozzavalokList">
+            @foreach (var id in Model.SelectedHozzavaloIds)
+            {
+                <li>
+                    @id
+                    <input type="hidden" name="SelectedHozzavaloIds" value="@id" />
+                </li>
+            }
+        </ul>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <input type="hidden" asp-for="SelectedHozzavaloIds" />
+
+    <button type="submit">Létrehozás</button>
+</form>
+
+<script>
+    function addSelectedHozzavalo() {
+        var selectedHozzavaloId = $("#ReceptHozzavalo_HozzavaloId").val();
+        var selectedHozzavaloNev = $("#ReceptHozzavalo_HozzavaloId option:selected").text();
+        if (selectedHozzavaloId && selectedHozzavaloNev) {
+            $("#selectedHozzavalokList").append('<li>' + selectedHozzavaloNev +
+                '<input type="hidden" name="SelectedHozzavaloIds" value="' + selectedHozzavaloId + '" /></li>');
+
+            $("#ReceptHozzavalo_HozzavaloId option:selected").remove();
+
+            updateSelectedHozzavaloIds();
+        }
+    }
+
+    function updateSelectedHozzavaloIds() {
+        var selectedIds = [];
+        $("#selectedHozzavalokList input[type='hidden']").each(function () {
+            selectedIds.push($(this).val());
+        });
+
+        $("input[name='SelectedHozzavaloIds']").val(selectedIds.join());
+    }
+</script>
+
+

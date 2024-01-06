@@ -1,0 +1,67 @@
+﻿@page
+@model ReceptekModel
+@{
+}
+
+<h2>Receptek Listája</h2>
+
+@using Recept.Entity.Generated;
+
+<a asp-page="/Create/CreateReceptek">Recept Létrehozása</a>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cím</th>
+            <th>Leírás</th>
+            <th>Hozzávalók</th>
+            <th>Allergének</th>
+            <th>Elkészítési Idő (Perc)</th>
+            <th>Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var recept in Model.Receptek)
+        {
+            <tr>
+                <td>@recept.Id</td>
+                <td>@recept.Cim</td>
+                <td>@recept.Leiras</td>
+                <td>
+                    @foreach (var hozzavalo in await Model.GetHozzavalokByReceptIdAsync(recept.Id))
+                    {
+                        <li>@hozzavalo.Nev</li>
+                    }
+                </td>
+                <td>
+                    @foreach (var allergen in await Model.GetAllergenekByReceptIdAsync(recept.Id))
+                    {
+                        <li>@allergen.Nev</li>
+                    }
+                </td>
+                <td>@recept.ElkeszitesiIdo</td>
+                <td>
+                    <a asp-page="/Edit/Receptek" asp-route-id="@recept.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteRecept" asp-route-id="@recept.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

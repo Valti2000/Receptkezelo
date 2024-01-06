@@ -1,0 +1,27 @@
+﻿@page
+@model Recept.Pages.Delete.DeleteReceptModel
+@{
+    ViewData["Title"] = "Törlés";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h3>Biztosan törölni szeretnéd ezt a receptet?</h3>
+    <div>
+        <form method="post">
+            <input type="submit" value="Igen" class="btn btn-danger" />
+            <a asp-page="/Read/Receptek">Vissza a listához</a>
+        </form>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}

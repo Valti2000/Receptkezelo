@@ -1,0 +1,23 @@
+﻿@page "{id:int}"
+@model Recept.Pages.Update.UpdateAllergenModel
+@{
+    <h2>Update Allergen</h2>
+
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <input type="hidden" asp-for="Allergen.Id" />
+
+        <div class="form-group">
+            <label asp-for="Allergen.Nev" class="control-label"></label>
+            <input asp-for="Allergen.Nev" class="form-control" />
+            <span asp-validation-for="Allergen.Nev" class="text-danger"></span>
+        </div>
+
+        <!-- További mezők az allergén módosításához -->
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+}

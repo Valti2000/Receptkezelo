@@ -1,0 +1,56 @@
+﻿@page
+@model Recept.Pages.Read.KategoriakModel
+@{
+    ViewData["Title"] = "Kategóriák";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a asp-page="/Create/CreateKategoria">Új kategória létrehozása</a>
+
+<form method="post" onsubmit="saveCheckboxState()">
+    <div>
+        <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
+        <input type="checkbox" id="includeDeletedCheckbox" />
+        <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <button type="submit">Szűrés</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Név</th>
+            <th>Alapanyagok</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kategoria in Model.Kategoriak)
+        {
+            <tr>
+                <td>@kategoria.Id</td>
+                <td>@kategoria.Nev</td>
+                <td>
+                    @{
+                        var alapanyagok = await Model.AlapanyagokByKategoriaIdAsync(kategoria.Id);
+                        var alapanyagNevList = string.Join(", ", alapanyagok.Select(a => a.Nev));
+                    }
+                    <span>@alapanyagNevList</span>
+                </td>
+                <td>
+                    <a asp-page="/Update/UpdateKategoria" asp-route-id="@kategoria.Id">Szerkesztés</a> |
+                    <a asp-page="/Delete/DeleteKategoria" asp-route-id="@kategoria.Id">Törlés</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<script>
+    function saveCheckboxState() {
+        var isChecked = document.getElementById('includeDeletedCheckbox').checked;
+        document.getElementById('isDeletedInput').value = isChecked;
+    }
+</script>

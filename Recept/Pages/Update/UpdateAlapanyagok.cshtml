@@ -1,0 +1,70 @@
+﻿@page
+@model Recept.Pages.Update.UpdateAlapanyagModel
+@{
+    ViewData["Title"] = "Alapanyag szerkesztése";
+}
+
+@using Recept.Entity.Generated
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Alapanyag.Nev"></label>
+        <input asp-for="Alapanyag.Nev" class="form-control" />
+        <span asp-validation-for="Alapanyag.Nev" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Kategória</label>
+        <select asp-for="SelectedKategoriaId" asp-items="@(new SelectList(Model.KategoriaLista, nameof(Kategorium.Id), nameof(Kategorium.Nev)))" class="form-control">
+        </select>
+        <span asp-validation-for="Alapanyag.KategoriaId" class="text-danger"></span>
+    </div>
+
+
+    <input type="hidden" name="SelectedKategoriaId" value="@Model.Alapanyag.KategoriaId" />
+
+    <div class="form-group">
+        <label>Allergének</label>
+        <select asp-for="AlapanyagAllergen.AllergenId" id="AlapanyagAllergen_AllergenId" asp-items="@(new SelectList(Model.AllergenLista, nameof(Allergen.Id), nameof(Allergen.Nev)))" class="form-control">
+            <option value="">Válasszon allergént</option>
+        </select>
+        <button type="button" onclick="addSelectedAllergen()">Allergén hozzáadása</button>
+        <ul id="selectedAllergenList">
+            @foreach (var id in Model.SelectedAllergenIds)
+            {
+                <li>
+                    @id
+                    <input type="hidden" name="SelectedAllergenIds" value="@id" />
+                </li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit">Módosítás</button>
+
+</form>
+
+<script>
+    function addSelectedAllergen() {
+        var selectedAllergenId = $("#AlapanyagAllergen_AllergenId").val();
+        var selectedAllergenNev = $("#AlapanyagAllergen_AllergenId option:selected").text();
+        if (selectedAllergenId && selectedAllergenNev) {
+            $("#selectedAllergenList").append('<li>' + selectedAllergenNev +
+                '<input type="hidden" name="SelectedAllergenIds" value="' + selectedAllergenId + '" /></li>');
+
+            $("#AlapanyagAllergen_AllergenId option:selected").remove();
+            updateSelectedAllergenIds();
+        }
+    }
+
+    function updateSelectedAllergenIds() {
+        var selectedIds = [];
+        $("#selectedAllergenList input[type='hidden']").each(function () {
+            selectedIds.push($(this).val());
+        });
+
+        $("input[name='SelectedAllergenIds']").val(selectedIds.join());
+    }
+</script>
