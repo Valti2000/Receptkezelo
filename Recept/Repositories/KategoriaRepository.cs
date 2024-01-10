@@ -13,6 +13,7 @@ namespace Recept.Repositories
         Task CreateAsync(Kategorium kategoria);
         Task UpdateAsync(Kategorium kategoria);
         Task DeleteAsync(int id);
+        Task<bool> VanFuggosegAsync(int id);
     }
 
     public class KategoriaRepository : IKategoriaRepository
@@ -26,7 +27,7 @@ namespace Recept.Repositories
 
         public async Task<Kategorium> GetByIdAsync(int id)
         {
-            return await _dbContext.Kategoria.FirstAsync(r => r.Id == id);
+            return await _dbContext.Kategoria.FirstAsync(r => r.Id == id && !r.Deleted);
         }
 
         public async Task<List<Kategorium>> GetAllAsync()
@@ -54,6 +55,11 @@ namespace Recept.Repositories
                 _dbContext.Remove(kategoria);
                 await _dbContext.SaveChangesAsync();
             }
+     
+        }
+        public async Task<bool> VanFuggosegAsync(int id)
+        {
+            return await _dbContext.Alapanyagok.AnyAsync(rh => rh.KategoriaId == id && !rh.Kategoria.Deleted);
         }
     }
 }

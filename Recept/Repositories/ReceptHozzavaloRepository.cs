@@ -12,6 +12,8 @@ namespace Recept.Repositories
         Task<List<ReceptHozzavalo>> GetByReceptIdAsync(int receptId);
         Task AddAsync(ReceptHozzavalo receptHozzavalo);
         Task DeleteAsync(int id);
+        Task<List<ReceptHozzavalo>> GetHozzavalokAsync();
+        Task DeleteByReceptIdAsync(int receptId);
     }
     public class ReceptHozzavaloRepository : IReceptHozzavaloRepository
     {
@@ -49,6 +51,18 @@ namespace Recept.Repositories
                 _context.ReceptHozzavalo.Remove(receptHozzavalo);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<ReceptHozzavalo>> GetHozzavalokAsync()
+        {
+            return await _context.ReceptHozzavalo.ToListAsync(); // Az adatbázisban tárolt ReceptHozzavalo-k lekérdezése
+        }
+
+        public async Task DeleteByReceptIdAsync(int receptId)
+        {
+            var hozzavalokToDelete = await _context.ReceptHozzavalo.Where(rh => rh.ReceptId == receptId).ToListAsync();
+            _context.ReceptHozzavalo.RemoveRange(hozzavalokToDelete);
+            await _context.SaveChangesAsync();
         }
     }
 }

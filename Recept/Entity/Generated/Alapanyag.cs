@@ -5,7 +5,6 @@ namespace Recept.Entity.Generated
 {
     public class Alapanyag
     {
-
         public int Id { get; set; }
         public string Nev { get; set; } = null!;
         public int KategoriaId { get; set; }

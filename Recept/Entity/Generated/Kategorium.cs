@@ -5,7 +5,6 @@ namespace Recept.Entity.Generated
 {
     public  class Kategorium
     {
-
         public int Id { get; set; }
         public string Nev { get; set; } = null!;
 

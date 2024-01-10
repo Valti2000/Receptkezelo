@@ -5,6 +5,7 @@ using Recept.Data;
 using Recept.Entity.Generated;
 using Recept.Repositories;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Recept.Pages.Read
@@ -56,14 +57,19 @@ namespace Recept.Pages.Read
         {
             var result = await _receptRepository.GetAllergenekByReceptIdAsync(receptId);
 
-            // Kiíratás a konzolra
-            Console.WriteLine("GetAllergenekByReceptIdAsync result:");
-            foreach (var allergen in result)
-            {
-                Console.WriteLine($"Allergen Id: {allergen.Id}, Name: {allergen.Nev}");
-            }
-
             return result;
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OnPostToggleKedvenc(int receptId)
+        {
+
+            // Kedvenc állapot frissítése az adatbázisban
+            var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _receptRepository.ToggleKedvencAsync(felhasznaloId, receptId);
+
+            // Visszatérés a receptek oldalra vagy az elõzõ oldalra
+            return RedirectToPage();
         }
     }
 }

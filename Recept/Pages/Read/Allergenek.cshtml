@@ -23,6 +23,8 @@
             <th>ID</th>
             <th>Név</th>
             <th>Alapanyag</th>
+            <th></th>
+            <th>Műveletek</th>
         </tr>
     </thead>
     <tbody>
@@ -41,8 +43,17 @@
                     }
                 </td>
                 <td>
-                    <a asp-page="/Update/UpdateAllergen" asp-route-id="@allergen.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteAllergen" asp-route-id="@allergen.Id">Törlés</a>
+                    @if (!allergen.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateAllergen" asp-route-id="@allergen.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteAllergen" asp-route-id="@allergen.Id">Törlés</a>
+                    </td>   
+                    }
+                    else
+                    {
+                        <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

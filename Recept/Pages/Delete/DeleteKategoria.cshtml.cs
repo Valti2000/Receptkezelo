@@ -45,13 +45,32 @@ namespace Recept.Pages.Delete
             }
 
             Kategoria = await _kategoriaRepository.GetByIdAsync(Id);
+
             if (Kategoria != null)
             {
-                Kategoria.Deleted = true;
-                await _kategoriaRepository.UpdateAsync(Kategoria);
+                var nincsFuggoseg = await _kategoriaRepository.VanFuggosegAsync(Id);
+
+                if (!nincsFuggoseg)
+                {
+
+                    Kategoria.Deleted = true;
+                    await _kategoriaRepository.UpdateAsync(Kategoria);
+
+                    TempData["Message"] = "Az Allergen sikeresen törölve lett.";
+                    return Page();
+
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Az Allergen nem lett törölve függõség miatt.";
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Read/Kategoriak");
         }
     }
 }
+
+
+

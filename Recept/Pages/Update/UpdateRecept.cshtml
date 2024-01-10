@@ -2,3 +2,79 @@
 @model Recept.Pages.Update.UpdateReceptModel
 @{
 }
+
+@using Recept.Entity.Generated
+
+<h2>Recept szerkesztése</h2>
+
+<form method="post">
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Recept.Id" />
+
+    <div class="form-group">
+        <label asp-for="Recept.Cim"></label>
+        <input asp-for="Recept.Cim" class="form-control" />
+        <span asp-validation-for="Recept.Cim" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Recept.Leiras"></label>
+        <input asp-for="Recept.Leiras" class="form-control" />
+        <span asp-validation-for="Recept.Leiras" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Recept.ElokeszitesiIdo"></label>
+        <input asp-for="Recept.ElokeszitesiIdo" class="form-control" />
+        <span asp-validation-for="Recept.ElokeszitesiIdo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Recept.FozesiIdo"></label>
+        <input asp-for="Recept.FozesiIdo" class="form-control" />
+        <span asp-validation-for="Recept.FozesiIdo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Hozzavalok</label>
+        <select asp-for="ReceptHozzavalo.ReceptId" id="ReceptHozzavalo_ReceptId" asp-items="@(new SelectList(Model.HozzavaloLista, nameof(Hozzavalo.Id), nameof(Hozzavalo.Nev)))" class="form-control">
+            <option value="">Válasszon hozzávalót</option>
+        </select>
+        <button type="button" onclick="addSelectedAllergen()">Hozzavaló hozzáadása</button>
+        <ul id="selectedHozzavaloList">
+            @foreach (var id in Model.SelectedHozzavaloIds)
+            {
+                <li>
+                    @id
+                    <input type="hidden" name="SelectedHozzavaloIds" value="@id" />
+                </li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit">Mentés</button>
+
+    <a asp-page="/Read/Receptek" class="btn btn-secondary">Mégse</a>
+</form>
+
+<script>
+    function addSelectedAllergen() {
+        var selectedAllergenId = $("#ReceptHozzavalo_ReceptId").val();
+        var selectedAllergenNev = $("#ReceptHozzavalo_ReceptId option:selected").text();
+        if (selectedAllergenId && selectedAllergenNev) {
+            $("#selectedHozzavaloList").append('<li>' + selectedAllergenNev +
+                '<input type="hidden" name="SelectedHozzavaloIds" value="' + selectedAllergenId + '" /></li>');
+
+            $("#ReceptHozzavalo_ReceptId option:selected").remove();
+            updateSelectedHozzavaloIds();
+        }
+    }
+
+    function updateSelectedHozzavaloIds() {
+        var selectedIds = [];
+        $("#selectedHozzavaloList input[type='hidden']").each(function () {
+            selectedIds.push($(this).val());
+        });
+
+        $("input[name='SelectedHozzavaloIds']").val(selectedIds.join());
+    }
+</script>

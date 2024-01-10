@@ -45,10 +45,27 @@ namespace Recept.Pages.Delete
             }
 
             Alapanyag = await _alapanyagRepository.GetByIdAsync(Id);
+
             if (Alapanyag != null)
             {
-                Alapanyag.Deleted = true;
-                await _alapanyagRepository.UpdateAsync(Alapanyag);
+
+                var nincsFuggoseg = await _alapanyagRepository.VanFuggosegAsync(Id);
+
+                if (!nincsFuggoseg)
+                {
+
+                    Alapanyag.Deleted = true;
+                    await _alapanyagRepository.UpdateAsync(Alapanyag);
+
+                    TempData["Message"] = "Az Alapanyag sikeresen törölve lett.";
+                    return Page();
+
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Az Alapanyag nem lett törölve függõség miatt.";
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Read/Alapanyagok");

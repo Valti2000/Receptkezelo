@@ -3,7 +3,7 @@
 @{
 }
 
-<h2>Receptek Listája</h2>
+<h2>Receptek</h2>
 
 @using Recept.Entity.Generated;
 
@@ -27,6 +27,8 @@
             <th>Hozzávalók</th>
             <th>Allergének</th>
             <th>Elkészítési Idő (Perc)</th>
+            <th>Kedvenc</th>
+            <th></th>
             <th>Műveletek</th>
         </tr>
     </thead>
@@ -51,8 +53,23 @@
                 </td>
                 <td>@recept.ElkeszitesiIdo</td>
                 <td>
-                    <a asp-page="/Edit/Receptek" asp-route-id="@recept.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteRecept" asp-route-id="@recept.Id">Törlés</a>
+                    <form method="post" asp-page="/Receptek/ToggleKedvenc">
+                        <input type="hidden" name="receptId" value="@recept.Id" />
+                        <button type="submit">Kedvenc</button>
+                    </form>
+                </td>
+                <td>
+                    @if (!recept.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateRecept" asp-route-id="@recept.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteRecept" asp-route-id="@recept.Id">Törlés</a>
+                    </td>
+                    }
+                    else
+                    {
+                    <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

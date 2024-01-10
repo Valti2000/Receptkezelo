@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Security.AccessControl;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Hosting;
 using Recept.Entity.Generated;
-using Recept.Services;
+
+
 
 namespace Recept.Data
 {
-    public partial class ReceptekContext : DbContext
+    public partial class ReceptekContext : IdentityDbContext<ApplicationUser>
+
+
     {
 
         public ReceptekContext(DbContextOptions<ReceptekContext> options)
@@ -26,6 +31,8 @@ namespace Recept.Data
         public virtual DbSet<Kategorium> Kategoria { get; set; } = null!;
         public virtual DbSet<Receptek> Receptek { get; set; } = null!;
         public virtual DbSet<ReceptHozzavalo> ReceptHozzavalo { get; set; } = null!;
+
+        public virtual DbSet<KedvencRecept> KedvencRecept { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -135,9 +142,40 @@ namespace Recept.Data
                 modelBuilder.Entity<Hozzavalo>().HasQueryFilter(p => !p.Deleted);
                 modelBuilder.Entity<Kategorium>().HasQueryFilter(p => !p.Deleted);
                 modelBuilder.Entity<Receptek>().HasQueryFilter(p => !p.Deleted);
-            
 
-           
+            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            {
+                b.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>(b =>
+            {
+                b.HasKey(r => new { r.UserId, r.RoleId });
+            });
+
+            modelBuilder.Entity<IdentityUserToken<string>>(b =>
+            {
+                b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+            });
+
+            modelBuilder.Entity<KedvencRecept>(entity =>
+            {
+                entity.HasKey(kr => new { kr.UserId, kr.ReceptId });
+
+                entity.HasOne(kr => kr.User)
+                    .WithMany(u => u.KedvencReceptek)
+                    .HasForeignKey(kr => kr.UserId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(kr => kr.Recept)
+                    .WithMany(r => r.Kedvelok)
+                    .HasForeignKey(kr => kr.ReceptId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
             OnModelCreatingPartial(modelBuilder);
         }
 

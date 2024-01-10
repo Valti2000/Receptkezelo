@@ -23,6 +23,8 @@
             <th>ID</th>
             <th>Név</th>
             <th>Alapanyagok</th>
+            <th></th>
+            <th>Műveletek</th>
         </tr>
     </thead>
     <tbody>
@@ -38,9 +40,19 @@
                     }
                     <span>@alapanyagNevList</span>
                 </td>
+
                 <td>
-                    <a asp-page="/Update/UpdateKategoria" asp-route-id="@kategoria.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteKategoria" asp-route-id="@kategoria.Id">Törlés</a>
+                    @if (!kategoria.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateKategoria" asp-route-id="@kategoria.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteKategoria" asp-route-id="@kategoria.Id">Törlés</a>
+                    </td>
+                    }
+                    else
+                    {
+                    <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

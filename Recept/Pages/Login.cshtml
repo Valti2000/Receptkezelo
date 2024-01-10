@@ -1,0 +1,32 @@
+﻿@page
+@model Recept.Pages.LoginModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    Layout = null; 
+}
+
+<h1>Bejelenkezés</h1>
+
+<form method="post">
+    <div>
+        <label asp-for="Nev"></label>
+        <input asp-for="Nev" />
+        <span asp-validation-for="Nev"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <button type="submit">Log in</button>
+
+</form>
+
+<div>
+    <p>Nincs még fiókja? <a asp-page="/Register">Regisztráció</a></p>
+</div>
+
+<div asp-validation-summary="All" class="text-danger"></div>

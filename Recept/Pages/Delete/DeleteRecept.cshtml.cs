@@ -51,23 +51,8 @@ namespace Recept.Pages.Delete
 
             if (Receptek != null)
             {
-                var nincsFuggoseg = await _receptRepository.VanFuggosegAsync(Id);
-
-                if (!nincsFuggoseg)
-                {
-                    await _receptRepository.LogikaiTorlesReceptAsync(Id);
-
-                    TempData["Message"] = "A recept sikeresen törölve lett.";
-                    return Page();
-
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "A recept nem lett törölve függõség miatt.";
-                    return Page();
-
-
-                }
+                Receptek.Deleted = true;
+                await _receptRepository.UpdateAsync(Receptek);
             }
             return RedirectToPage("/Read/Receptek");
         }

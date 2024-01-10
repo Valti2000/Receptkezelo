@@ -19,5 +19,8 @@ namespace Recept.Entity.Generated
         public int ElkeszitesiIdo => ElokeszitesiIdo + FozesiIdo;
 
         public int FozesiIdo { get; set; }
+
+        public ICollection<KedvencRecept> Kedvelok { get; set; } = new List<KedvencRecept>();
     }
 }
+

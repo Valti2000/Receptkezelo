@@ -20,10 +20,6 @@ namespace Recept.Repositories
 
         Task<List<Allergen>> GetAllergenekByReceptIdAsync(int AlapanyagId);
 
-        Task LogikaiTorlesReceptAsync(int receptId);
-
-        Task<bool> VanFuggosegAsync(int receptId);
-
     }
 
     public class ReceptRepository : IReceptRepository
@@ -114,26 +110,32 @@ namespace Recept.Repositories
             return await _allergenRepository.GetByAllergenIdsAsync(allergenIds);
         }
 
-        public async Task<bool> VanFuggosegAsync(int receptId)
+        public async Task ToggleKedvencAsync(string felhasznaloId, int receptId)
         {
-            return await _dbContext.ReceptHozzavalo.AnyAsync(rh => rh.ReceptId == receptId && !rh.Hozzavalo.Deleted);
-        }
 
-        public async Task LogikaiTorlesReceptAsync(int receptId)
-        {
-            var nincsFuggoseg = await VanFuggosegAsync(receptId);
-
-            if (!nincsFuggoseg)
+            var recept = await _dbContext.Receptek.FindAsync(receptId);
+            if (recept == null)
             {
-                var recept = await GetByIdAsync(receptId);
 
-                if (recept != null)
-                {
-                    recept.Deleted = true;
-
-                    await _dbContext.SaveChangesAsync();
-                }
+                throw new ArgumentException("A megadott recept nem létezik.");
             }
+
+            var kedvencRecord = await _dbContext.KedvencRecept.FindAsync(felhasznaloId, receptId);
+
+            if (kedvencRecord != null)
+            {
+                _dbContext.KedvencRecept.Remove(kedvencRecord);
+            }
+            else
+            {
+                _dbContext.KedvencRecept.Add(new KedvencRecept
+                {
+                    UserId = felhasznaloId,
+                    ReceptId = receptId
+                });
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

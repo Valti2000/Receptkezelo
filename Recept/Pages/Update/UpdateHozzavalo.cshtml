@@ -1,0 +1,40 @@
+﻿@page
+@model Recept.Pages.Update.UpdateHozzavaloModel
+
+<h2>Hozzávaló szerkesztése</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Hozzavalo.Id" />
+    <div class="form-group">
+        <label asp-for="Hozzavalo.Nev"></label>
+        <input asp-for="Hozzavalo.Nev" class="form-control" />
+        <span asp-validation-for="Hozzavalo.Nev" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Hozzavalo.Mennyiseg"></label>
+        <input asp-for="Hozzavalo.Mennyiseg" class="form-control" />
+        <span asp-validation-for="Hozzavalo.Mennyiseg" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Hozzavalo.Mertekegyseg"></label>
+        <input asp-for="Hozzavalo.Mertekegyseg" class="form-control" />
+        <span asp-validation-for="Hozzavalo.Mertekegyseg" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Hozzavalo.AlapanyagId"></label>
+        <select asp-for="Hozzavalo.AlapanyagId" asp-items="@(new SelectList(Model.Alapanyagok, "Id", "Nev"))" class="form-control">
+            <option value="">Válassz alapanyagot</option>
+        </select>
+        <span asp-validation-for="Hozzavalo.AlapanyagId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Hozzavalo.CsoportId"></label>
+        <select asp-for="Hozzavalo.CsoportId" asp-items="@(new SelectList(Model.Csoportok, "Id", "Nev"))" class="form-control">
+            <option value="">Válassz csoportot</option>
+        </select>
+        <span asp-validation-for="Hozzavalo.CsoportId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Mentés</button>
+    <a asp-page="/Read/Hozzavalok" class="btn btn-secondary">Mégse</a>
+</form>
+

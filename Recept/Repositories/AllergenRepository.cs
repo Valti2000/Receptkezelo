@@ -14,6 +14,7 @@ namespace Recept.Repositories
         Task UpdateAsync(Allergen allergen);
         Task DeleteAsync(int id);
         Task<List<Allergen>> GetByAllergenIdsAsync(List<int> allergenIds);
+        Task<bool> VanFuggosegAsync(int receptId);
     }
 
     public class AllergenRepository : IAllergenRepository
@@ -62,6 +63,11 @@ namespace Recept.Repositories
             return await _dbContext.Allergenek
                 .Where(allergen => allergenIds.Contains(allergen.Id))
                 .ToListAsync();
+        }
+
+        public async Task<bool> VanFuggosegAsync(int AllergenId)
+        {
+            return await _dbContext.AlapanyagAllergen.AnyAsync(rh => rh.AllergenId == AllergenId && !rh.Alapanyag.Deleted);
         }
     }
 }

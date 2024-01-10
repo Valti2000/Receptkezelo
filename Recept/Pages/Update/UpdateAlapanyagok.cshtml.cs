@@ -62,13 +62,11 @@ namespace Recept.Pages.Update
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            Alapanyag = await _alapanyagRepository.GetByIdAsync(id);
 
             Alapanyag.KategoriaId = SelectedKategoriaId;
 
             if (SelectedAllergenIds != string.Empty)
             {
-                Alapanyag = await _alapanyagRepository.GetByIdAsync(id);
 
                 await _alapanyagAllergenRepository.DeleteAllByAlapanyagIdAsync(Alapanyag.Id);
 

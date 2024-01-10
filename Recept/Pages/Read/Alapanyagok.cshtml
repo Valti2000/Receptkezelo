@@ -1,10 +1,9 @@
 ﻿@page
 @model Recept.Pages.Read.AlapanyagokModel
 @{
-    ViewData["Title"] = "Alapanyagok listája";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Alapanyagok</h1>
 
 <form method="post" onsubmit="saveCheckboxState()">
     <a asp-page="/Create/CreateAlapanyag">Alapanyag Létrehozása</a>
@@ -24,8 +23,8 @@
             <th>Név</th>
             <th>Kategória</th>
             <th>Allergén</th>
-            <th>Műveletek</th>
             <th></th>
+            <th>Műveletek</th>
         </tr>
     </thead>
     <tbody>
@@ -44,8 +43,17 @@
                     </ul>
                 </td>
                 <td>
-                    <a asp-page="/Update/UpdateAlapanyagok" asp-route-id="@alapanyag.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteAlapanyag" asp-route-id="@alapanyag.Id">Törlés</a>
+                    @if (!alapanyag.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateAlapanyagok" asp-route-id="@alapanyag.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteAlapanyag" asp-route-id="@alapanyag.Id">Törlés</a>
+                    </td>
+                    }
+                    else
+                    {
+                        <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

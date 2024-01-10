@@ -23,6 +23,7 @@
             <th>Név</th>
             <th>Hozzávalók</th>
             <th></th>
+            <th>Műveletek</th>
         </tr>
     </thead>
     <tbody>
@@ -40,8 +41,17 @@
                     </ul>
                 </td>
                 <td>
-                    <a asp-page="/Update/UpdateCsoport" asp-route-id="@csoport.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteCsoport" asp-route-id="@csoport.Id">Törlés</a>
+                    @if (!csoport.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateCsoport" asp-route-id="@csoport.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteCsoport" asp-route-id="@csoport.Id">Törlés</a>
+                    </td>
+                    }
+                    else
+                    {
+                        <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

@@ -2,7 +2,7 @@
 @model Recept.Pages.Read.HozzavalokModel
 @{
 }
-<h2>Hozzávalók Listája</h2>
+<h2>Hozzávalók</h2>
 
 
 <p>
@@ -27,6 +27,7 @@
             <th>Mértékegység (ml)</th>
             <th>Alapanyag</th>
             <th>Csoport</th>
+            <th></th>
             <th>Műveletek</th>
         </tr>
     </thead>
@@ -41,8 +42,17 @@
                 <td>@await Model.GetAlapanyagbyId(hozzavalo.AlapanyagId)</td>
                 <td>@await Model.GetCsoportNevById(hozzavalo.CsoportId)</td>
                 <td>
-                    <a asp-page="/Edit/EditHozzavalo" asp-route-id="@hozzavalo.Id">Szerkesztés</a> |
-                    <a asp-page="/Delete/DeleteHozzavalo" asp-route-id="@hozzavalo.Id">Törlés</a>
+                    @if (!hozzavalo.Deleted)
+                    {
+                    <td>
+                        <a asp-page="/Update/UpdateHozzavalo" asp-route-id="@hozzavalo.Id">Szerkesztés</a> |
+                        <a asp-page="/Delete/DeleteHozzavalo" asp-route-id="@hozzavalo.Id">Törlés</a>
+                    </td>
+                    }
+                    else
+                    {
+                        <span>Törölt</span>
+                    }
                 </td>
             </tr>
         }

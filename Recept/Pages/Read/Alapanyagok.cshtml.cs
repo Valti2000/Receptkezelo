@@ -39,8 +39,10 @@ namespace Recept.Pages.Read
 
         public async Task OnGetAsync()
         {
-            Alapanyagok = await _alapanyagRepository.GetAllAsync();
+            var alapanyagok = await _alapanyagRepository.GetAllAsync();
+            Alapanyagok = alapanyagok ?? new List<Alapanyag>();
         }
+
 
         public async Task OnPostAsync()
         {

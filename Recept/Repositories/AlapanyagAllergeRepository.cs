@@ -14,7 +14,6 @@ namespace Recept.Repositories
         Task CreateAsync(AlapanyagAllergen alapanyagAllergen);
         Task UpdateAsync(AlapanyagAllergen alapanyagAllergen);
         Task DeleteAsync(int id);
-
         Task DeleteAllByAlapanyagIdAsync(int alapanyagId);
     }
 

@@ -16,6 +16,8 @@ namespace Recept.Repositories
         Task DeleteAsync(int id);
         Task<int> ReturnIdAsync(Hozzavalo hozzavalo);
         Task<List<Hozzavalo>> GetByCsoportIdAsync(int csoportId);
+
+        Task<bool> VanFuggosegAsync(int id);
     }
 
     public class HozzavaloRepository : IHozzavaloRepository
@@ -68,6 +70,11 @@ namespace Recept.Repositories
         public async Task<List<Hozzavalo>> GetByCsoportIdAsync(int csoportId)
         {
             return await _dbContext.Hozzavalok.Where(h => h.CsoportId == csoportId).ToListAsync();
+        }
+
+        public async Task<bool> VanFuggosegAsync(int id)
+        {
+            return await _dbContext.ReceptHozzavalo.AnyAsync(rh => rh.HozzavaloId == id && !rh.Recept.Deleted);
         }
     }
 }

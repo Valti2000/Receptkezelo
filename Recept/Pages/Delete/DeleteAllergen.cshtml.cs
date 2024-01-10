@@ -48,8 +48,26 @@ namespace Recept.Pages.Delete
             Allergen = await _allergenRepository.GetByIdAsync(Id);
             if (Allergen != null)
             {
-                Allergen.Deleted = true;
-                await _allergenRepository.UpdateAsync(Allergen);
+               
+                
+
+                var nincsFuggoseg = await _allergenRepository.VanFuggosegAsync(Id);
+
+                if (!nincsFuggoseg)
+                {
+
+                    Allergen.Deleted = true;
+                    await _allergenRepository.UpdateAsync(Allergen);
+
+                    TempData["Message"] = "Az Allergen sikeresen törölve lett.";
+                    return Page();
+
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Az Allergen nem lett törölve függõség miatt.";
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Read/Allergenek");

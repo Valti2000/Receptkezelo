@@ -9,6 +9,10 @@
 <h1>@ViewData["Title"]</h1>
 
 <form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Alapanyag.Id" />
+
     <div class="form-group">
         <label asp-for="Alapanyag.Nev"></label>
         <input asp-for="Alapanyag.Nev" class="form-control" />
@@ -43,7 +47,7 @@
     </div>
 
     <button type="submit">Módosítás</button>
-
+    <a asp-page="/Read/Alapanyagok" class="btn btn-secondary">Mégse</a>
 </form>
 
 <script>

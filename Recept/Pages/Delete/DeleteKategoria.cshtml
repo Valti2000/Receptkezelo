@@ -11,5 +11,15 @@
 <form method="post">
     <input type="hidden" asp-for="Kategoria.Id" />
     <button type="submit" class="btn btn-danger">Törlés</button>
-    <a asp-page="./Kategoriak" class="btn btn-secondary">Mégse</a>
+    <a asp-page="/Read/Kategoriak" class="btn btn-secondary">Mégse</a>
 </form>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}

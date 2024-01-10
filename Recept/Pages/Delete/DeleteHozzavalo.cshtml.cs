@@ -45,14 +45,35 @@ namespace Recept.Pages.Delete
             }
 
             Hozzavalo = await _hozzavaloRepository.GetByIdAsync(Id);
+
+
             if (Hozzavalo != null)
             {
-                Hozzavalo.Deleted = true;
-                await _hozzavaloRepository.UpdateAsync(Hozzavalo);
-            }
+                var nincsFuggoseg = await _hozzavaloRepository.VanFuggosegAsync(Id);
 
+                if (!nincsFuggoseg)
+                {
+
+                    Hozzavalo.Deleted = true;
+                    await _hozzavaloRepository.UpdateAsync(Hozzavalo);
+
+                    TempData["Message"] = "Az Allergen sikeresen törölve lett.";
+                    return Page();
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Az Allergen nem lett törölve függõség miatt.";
+                    return Page();
+                }
+
+            }
 
             return RedirectToPage("/Read/Hozzavalok");
         }
     }
 }
+
+
+
+
+

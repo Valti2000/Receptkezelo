@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Entity.Generated;
@@ -55,7 +54,6 @@ namespace Recept.Pages.Create
             Alapanyag.Kategoria = await _kategoriaRepository.GetByIdAsync(Alapanyag.KategoriaId);
             await _alapanyagRepository.CreateAsync(Alapanyag);
 
-            Console.WriteLine("SelectedHozzavaloIds on server side: " + string.Join(",", SelectedAllergenIds));
 
             if (SelectedAllergenIds != string.Empty)
             {

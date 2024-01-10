@@ -20,6 +20,8 @@ namespace Recept.Repositories
         Task<List<Alapanyag>> GetAlapanyagokByIdsAsync(List<int> alapanyagIds);
         Task<List<Alapanyag>> GetAlapanyagokByAllergenIdAsync(int allergenId);
         Task<List<Allergen>> GetAllergenByAlapanyagIdAsync(int alapanyagId);
+
+        Task<bool> VanFuggosegAsync(int receptId);
     }
 
     public class AlapanyagRepository : IAlapanyagRepository
@@ -119,16 +121,19 @@ namespace Recept.Repositories
 
             var allergenIds = alapanyagAllergenList.Select(rh => rh.AllergenId).ToList();
 
-            // Ha nincs allergén, üres listát adj vissza
             if (allergenIds.Count == 0)
             {
                 return new List<Allergen>();
             }
 
-            // Most az allergenIds-ből leképezés segítségével kérdezzük le az allergéneket az AllergenRepository-ból
             var allergens = await _allergenRepository.GetByAllergenIdsAsync(allergenIds);
 
             return allergens;
+        }
+
+        public async Task<bool> VanFuggosegAsync(int AlapanyagId)
+        {
+            return await _dbContext.Hozzavalok.AnyAsync(rh => rh.AlapanyagId == AlapanyagId && !rh.Deleted);
         }
     }
 }
