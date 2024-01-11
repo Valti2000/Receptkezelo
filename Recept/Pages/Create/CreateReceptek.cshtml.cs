@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Entity.Generated;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Recept.Pages.Create
 {
+    [Authorize(Roles = "Admin, ReceptIro")]
     public class CreateReceptModel : PageModel
     {
         private readonly IReceptRepository _receptRepository;

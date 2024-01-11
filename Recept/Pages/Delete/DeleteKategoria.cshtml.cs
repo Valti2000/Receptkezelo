@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Entity.Generated;
@@ -5,6 +6,7 @@ using Recept.Repositories;
 
 namespace Recept.Pages.Delete
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteKategoriaModel : PageModel
     {
         private readonly IKategoriaRepository _kategoriaRepository;

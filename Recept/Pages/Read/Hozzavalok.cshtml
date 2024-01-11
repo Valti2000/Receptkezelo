@@ -1,7 +1,10 @@
 ﻿@page
 @model Recept.Pages.Read.HozzavalokModel
 @{
+    var jwtToken = PageContext.HttpContext.Request.Cookies["myJwtCookie"];
 }
+
+
 <h2>Hozzávalók</h2>
 
 
@@ -14,6 +17,7 @@
         <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
         <input type="checkbox" id="includeDeletedCheckbox" />
         <input type="hidden" name="IsDeleted" id="isDeletedInput" />
+        <input type="hidden" name="JwtToken" id="jwtTokenInput" value="@jwtToken" />
         <button type="submit">Szűrés</button>
     </div>
 </form>
@@ -64,4 +68,8 @@
         var isChecked = document.getElementById('includeDeletedCheckbox').checked;
         document.getElementById('isDeletedInput').value = isChecked;
     }
+
+    // A JWT token küldése a szerver felé a formmal együtt
+    var jwtToken = document.getElementById('jwtTokenInput').value;
+    document.getElementById('jwtTokenInput').value = jwtToken;
 </script>

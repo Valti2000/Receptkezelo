@@ -4,24 +4,30 @@ using Recept.Entity;
 using Recept.Services;
 using Recept.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using Microsoft.AspNetCore.Mvc;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 {
     options.Conventions.AddPageRoute("/Login", "");
 });
 
+
 builder.Services.AddDbContext<ReceptekContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Recept"))
-       .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Recept"))
+           .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information));
 
-
+// Identity szolgáltatások hozzáadása
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -30,8 +36,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 })
-.AddEntityFrameworkStores<ReceptekContext>()
-.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ReceptekContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IReceptRepository, ReceptRepository>();
 builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
@@ -48,6 +54,26 @@ builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:7045", // Az issuer URL-je
+            ValidAudience = "https://localhost:7045", // Az audience URL-je
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EzIttEgyNagyonHosszuTitkosKulcsAmiLegalabb128BitHosszu")) // A titkos kulcs, amin a token alapul
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ReceptOlvaso", policy => policy.RequireRole("ReceptOlvaso"));
+    // További szerepkör alapú policy-kat is hozzáadhatsz szükség esetén
+});
 
 var app = builder.Build();
 
@@ -61,23 +87,23 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Szerepkörök inicializálása
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    IdentityModel.InitializeRoles(serviceProvider).Wait();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
+
+
     endpoints.MapControllers();
     endpoints.MapRazorPages();
-
-    endpoints.MapControllerRoute(
-        name: "login",
-        pattern: "/login",
-        defaults: new { controller = "Home", action = "Login" }
-    );
-
-    endpoints.MapControllerRoute(
-        name: "receptek",
-        pattern: "/Receptek/{action=Index}/{id?}",
-        defaults: new { controller = "Home" });
 });
+
 app.Run();

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Entity.Generated;
@@ -6,6 +7,8 @@ using Recept.Repositories;
 
 namespace Recept.Pages.Update
 {
+    [Authorize(Roles = "Admin")]
+
     public class UpdateCsoportModel : PageModel
     {
         private readonly ICsoportRepository _csoportRepository;

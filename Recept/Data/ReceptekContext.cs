@@ -31,7 +31,6 @@ namespace Recept.Data
         public virtual DbSet<Kategorium> Kategoria { get; set; } = null!;
         public virtual DbSet<Receptek> Receptek { get; set; } = null!;
         public virtual DbSet<ReceptHozzavalo> ReceptHozzavalo { get; set; } = null!;
-
         public virtual DbSet<KedvencRecept> KedvencRecept { get; set; } = null!;
 
 
@@ -169,7 +168,7 @@ namespace Recept.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(kr => kr.Recept)
-                    .WithMany(r => r.Kedvelok)
+                    .WithMany(r => r.KedvencReceptek)
                     .HasForeignKey(kr => kr.ReceptId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);

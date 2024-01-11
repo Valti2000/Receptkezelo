@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Recept.Services;
 
 namespace Recept.Pages.Create
 {
+    [Authorize(Roles = "Admin, ReceptIro")]
     public class CreateAllergenModel : PageModel
     {
 

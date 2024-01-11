@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Entity.Generated;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Recept.Pages.Update
 {
+    [Authorize(Roles = "Admin")]
     public class UpdateHozzavaloModel : PageModel
     {
         private readonly IHozzavaloRepository _hozzavaloRepository;

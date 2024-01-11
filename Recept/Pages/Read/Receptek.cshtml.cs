@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Recept.Pages.Read
 {
+    [Authorize(Roles = "Admin , ReceptIro, ReceptOlvaso")]
     public class ReceptekModel : PageModel
     {
         private readonly IReceptRepository _receptRepository;
@@ -17,6 +19,11 @@ namespace Recept.Pages.Read
 
         [BindProperty]
         public int ElokeszitesiIdo { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public bool CsakKedvencek { get; set; }
+
+        public string ReceivedToken { get; set; } = string.Empty;
 
         public ReceptekModel(IReceptRepository receptRepository, ReceptekContext dbContext)
         {
@@ -28,8 +35,25 @@ namespace Recept.Pages.Read
 
         public async Task OnGetAsync()
         {
-            Receptek = await _receptRepository.GetAllAsync();
+            var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var jwtToken = HttpContext.User?.FindFirstValue("sub");
+
+            // Beállítjuk a ReceivedToken értékét
+            ReceivedToken = jwtToken ?? string.Empty;
+
+            Console.WriteLine("ReceivedToken: " + ReceivedToken);
+
+            if (CsakKedvencek)
+            {
+                Receptek = await _receptRepository.GetKedvencReceptByUserIdAsync(felhasznaloId);
+            }
+            else
+            {
+                Receptek = await _receptRepository.GetAllAsync();
+            }
         }
+
 
         [BindProperty(SupportsGet = true)]
         public bool IsDeleted { get; set; }
@@ -60,16 +84,55 @@ namespace Recept.Pages.Read
             return result;
         }
 
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostToggleKedvenc(int receptId)
         {
-
-            // Kedvenc állapot frissítése az adatbázisban
             var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _receptRepository.ToggleKedvencAsync(felhasznaloId, receptId);
 
-            // Visszatérés a receptek oldalra vagy az elõzõ oldalra
-            return RedirectToPage();
+            var kedvencRecept = await _dbContext.KedvencRecept
+                .FirstOrDefaultAsync(k => k.ReceptId == receptId && k.UserId == felhasznaloId);
+
+            if (kedvencRecept == null)
+            {
+                kedvencRecept = new KedvencRecept { ReceptId = receptId, UserId = felhasznaloId };
+                _dbContext.KedvencRecept.Add(kedvencRecept);
+            }
+            else
+            {
+                _dbContext.KedvencRecept.Remove(kedvencRecept);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToPage(new { page = "/Read/Receptek" });
         }
+
+
+        public async Task<IActionResult> OnPostRemoveFromFavorites(int receptId)
+        {
+            var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var kedvencRecept = await _dbContext.KedvencRecept
+                .FirstOrDefaultAsync(k => k.ReceptId == receptId && k.UserId == felhasznaloId);
+
+            if (kedvencRecept != null)
+            {
+                _dbContext.KedvencRecept.Remove(kedvencRecept);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return RedirectToPage(new { page = "/Read/Receptek" });
+        }
+        public async Task GetKedvencReceptByUserId1()
+        {
+            var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Receptek = await _receptRepository.GetKedvencReceptByUserIdAsync(felhasznaloId);
+        }
+
+        public bool IsReceptKedvelt(int receptId, string felhasznaloId)
+        {
+            // Ellenõrizzük, hogy a KedvencRecept táblában található-e adott recept és felhasználói azonosítóval
+            return _dbContext.KedvencRecept.Any(k => k.ReceptId == receptId && k.UserId == felhasznaloId);
+        }
+
     }
 }

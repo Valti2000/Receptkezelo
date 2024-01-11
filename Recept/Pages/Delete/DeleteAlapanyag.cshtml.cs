@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using Recept.Entity.Generated;
 using Recept.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Recept.Pages.Delete
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteAlapanyagModel : PageModel
     {
         private readonly IAlapanyagRepository _alapanyagRepository;

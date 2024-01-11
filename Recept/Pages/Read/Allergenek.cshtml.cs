@@ -1,4 +1,5 @@
 // Recept.Pages.AllergenekModel osztály
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Recept.Pages
 {
+    [Authorize(Roles = "Admin , ReceptIro")]
     public class AllergenekModel : PageModel
     {
         private readonly IAllergenRepository _allergenRepository;

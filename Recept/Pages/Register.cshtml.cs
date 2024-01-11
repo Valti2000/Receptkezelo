@@ -2,19 +2,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Recept.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Recept.Pages
 {
 public class RegisterModel : PageModel
 {
     private readonly IRegistrationService _registrationService;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public RegisterModel(IRegistrationService registrationService)
-    {
-        _registrationService = registrationService;
-    }
+        public RegisterModel(IRegistrationService registrationService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _registrationService = registrationService;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
 
-    [BindProperty]
+        [BindProperty]
     public RegisterViewModel Input { get; set; } = new RegisterViewModel();
 
     public class RegisterViewModel
@@ -45,26 +50,35 @@ public class RegisterModel : PageModel
     {
     }
 
-    public async Task<IActionResult> OnPostAsync()
-    {
-        if (ModelState.IsValid)
+        public async Task<IActionResult> OnPostAsync()
         {
-            var result = await _registrationService.RegisterUser(Input);
+            if (ModelState.IsValid)
+            {
+                var result = await _registrationService.RegisterUser(Input);
 
-            if (result)
-            {
-                // Sikeres regisztráció esetén további teendõk
-                return RedirectToPage("/Login");
+                if (result)
+                {
+                    var user = await _userManager.FindByNameAsync(Input.Nev);
+
+                    var roleResult = await _userManager.AddToRoleAsync(user, "ReceptOlvaso");
+
+                    if (roleResult.Succeeded)
+                    {
+                        return RedirectToPage("/Login");
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+
+                }
             }
-            else
-            {
-                // Sikertelen regisztráció esetén kezelés
-                // Pl.: ModelState hibaüzenetek hozzáadása
-            }
+
+
+            return Page();
         }
-
-        // Hiba esetén visszatérés az oldalra
-        return Page();
     }
-}
 }

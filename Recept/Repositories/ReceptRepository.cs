@@ -15,10 +15,10 @@ namespace Recept.Repositories
         Task UpdateAsync(Receptek recept);
         Task DeleteAsync(int id);
         Task<List<Hozzavalo>> GetHozzavalokByReceptIdAsync(int receptId);
-
         Task<List<Hozzavalo>> GetHozzavalokAsync();
-
         Task<List<Allergen>> GetAllergenekByReceptIdAsync(int AlapanyagId);
+        Task ToggleKedvencAsync(string felhasznaloId, int receptId);
+        Task<IEnumerable<Receptek>> GetKedvencReceptByUserIdAsync(string userId);
 
     }
 
@@ -137,5 +137,19 @@ namespace Recept.Repositories
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Receptek>> GetKedvencReceptByUserIdAsync(string userId)
+        {
+            var kedvencReceptek = await _dbContext.KedvencRecept
+                .Where(kr => kr.UserId == userId)
+                .Include(kr => kr.Recept)
+                    .ThenInclude(recept => recept.ReceptHozzavalok)
+                        .ThenInclude(hozzavalo => hozzavalo.Hozzavalo)
+                .ToListAsync();
+
+            return kedvencReceptek.Select(kr => kr.Recept).ToList();
+        }
+
+
     }
 }

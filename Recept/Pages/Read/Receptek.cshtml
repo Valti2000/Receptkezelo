@@ -1,13 +1,21 @@
 ﻿@page
-@model ReceptekModel
+@model Recept.Pages.Read.ReceptekModel
 @{
+    @inject Microsoft.Extensions.Logging.ILogger<ReceptekModel> Logger
+
 }
+@using Recept.Entity.Generated;
 
 <h2>Receptek</h2>
 
-@using Recept.Entity.Generated;
+@using System.Security.Claims
 
 <a asp-page="/Create/CreateReceptek">Recept Létrehozása</a>
+
+<form method="get" asp-page="/Read/Receptek">
+    <input type="hidden" name="CsakKedvencek" value="@(Model.CsakKedvencek ? "false" : "true")" />
+    <button type="submit">@(!Model.CsakKedvencek ? "Csak kedvencek" : "Összes recept")</button>
+</form>
 
 <form method="post" onsubmit="saveCheckboxState()">
     <div>
@@ -42,7 +50,7 @@
                 <td>
                     @foreach (var hozzavalo in await Model.GetHozzavalokByReceptIdAsync(recept.Id))
                     {
-                        <li>@hozzavalo.Nev</li>
+                        <li>@(hozzavalo.Nev)</li>
                     }
                 </td>
                 <td>
@@ -53,9 +61,18 @@
                 </td>
                 <td>@recept.ElkeszitesiIdo</td>
                 <td>
-                    <form method="post" asp-page="/Receptek/ToggleKedvenc">
+                    @{
+                        var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        var isKedveltRecept = Model.IsReceptKedvelt(recept.Id, felhasznaloId);
+                        var buttonText = isKedveltRecept ? "Kedvencekből törlés" : "Kedvencekhez adás";
+                        var handler = isKedveltRecept ? "RemoveFromFavorites" : "ToggleKedvenc";
+                        var buttonColor = isKedveltRecept ? "red" : "green";
+                    }
+
+                    <form method="post" asp-page="/Read/Receptek" asp-page-handler="@handler">
                         <input type="hidden" name="receptId" value="@recept.Id" />
-                        <button type="submit">Kedvenc</button>
+                        <input type="hidden" name="jwtToken" value="ReceivedToken" /> <!-- Új sor -->
+                        <button type="submit">@buttonText</button>
                     </form>
                 </td>
                 <td>

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Recept.Repositories;
 using Recept.Entity.Generated;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Recept.Pages.Delete
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteAllergenModel : PageModel
     {
         private readonly IAllergenRepository _allergenRepository;

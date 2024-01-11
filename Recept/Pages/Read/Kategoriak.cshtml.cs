@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Recept.Repositories;
 
 namespace Recept.Pages.Read
 {
+    [Authorize(Roles = "Admin , ReceptIro")]
     public class KategoriakModel : PageModel
     {
         private readonly IKategoriaRepository _kategoriaRepository;

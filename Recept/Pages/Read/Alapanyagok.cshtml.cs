@@ -9,9 +9,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reflection.Emit;
 using Recept.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Recept.Pages.Read
 {
+    [Authorize(Roles = "Admin , ReceptIro")]
     public class AlapanyagokModel : PageModel
     {
         private readonly IAlapanyagRepository _alapanyagRepository;
@@ -30,7 +32,6 @@ namespace Recept.Pages.Read
             _unitOfWork = unitOfWork;
             Alapanyagok = new List<Alapanyag>();
             _dbContext = dbContext;
-            
     }
         public IEnumerable<Alapanyag> Alapanyagok { get; set; }
 

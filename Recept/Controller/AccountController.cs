@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Recept.Pages;
 using Recept.Services;
 
-[AllowAnonymous]
+[Authorize]
 public class AccountController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,7 +27,9 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(ApplicationUser user, string password)
     {
-        var result = await _userManager.CreateAsync(user, password);
+        user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
+
+        var result = await _userManager.CreateAsync(user);
 
         if (result.Succeeded)
         {
@@ -40,7 +42,7 @@ public class AccountController : Controller
             ModelState.AddModelError(string.Empty, error.Description);
         }
 
-        return View("Register"); // Return the register view in case of failure
+        return View("Register");
     }
 
 
@@ -70,7 +72,6 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Logout()
     {
         _signInManager.SignOutAsync();
