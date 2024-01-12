@@ -58,13 +58,13 @@ namespace Recept.Pages.Delete
                     Kategoria.Deleted = true;
                     await _kategoriaRepository.UpdateAsync(Kategoria);
 
-                    TempData["Message"] = "Az Allergen sikeresen törölve lett.";
+                    TempData["Message"] = "A Ketegoria sikeresen törölve lett.";
                     return Page();
 
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Az Allergen nem lett törölve függõség miatt.";
+                    TempData["ErrorMessage"] = "A Ketegoria nem lett törölve függõség miatt.";
                     return Page();
                 }
             }

@@ -17,7 +17,6 @@
                 <td>@user.UserName</td>
                 <td>@user.Role</td>
                 <td>
-                    <!-- Űrlap a szerepkör módosításához -->
                     <form method="post">
                         <input type="hidden" name="userId" value="@user.UserId" />
                         <label asp-for="@Model.Users[i].Role">Válassza ki a szerepkört:</label>

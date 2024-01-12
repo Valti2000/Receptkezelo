@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Recept.Pages.Read; // Gondoskodj arról, hogy a megfelelő névteret hozzáadtad
+using Recept.Pages.Read; 
 
 namespace Recept.Controllers
 {

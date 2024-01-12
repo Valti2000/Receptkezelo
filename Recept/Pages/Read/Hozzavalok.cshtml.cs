@@ -44,17 +44,16 @@ namespace Recept.Pages.Read
                 var handler = new JwtSecurityTokenHandler();
                 var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
 
-                // Ha eljutsz ide, a token helyes
-                // Most logold a szükséges információkat
+
                 var userId = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "name")?.Value;
-                // Logolj egy információt vagy rögzítsd a szükséges adatokat
+                
                 Console.WriteLine($"A JWT token elfogadva a felhasználó számára: {userId}");
 
                 Hozzavalok = await _hozzavaloRepository.GetAllAsync();
             }
             catch (Exception ex)
             {
-                // Hiba történt a JWT token ellenõrzésekor
+                
                 Console.WriteLine($"Hiba a JWT token ellenõrzésekor: {ex.Message}");
                 RedirectToPage("/Account/Login");
             }
@@ -64,16 +63,15 @@ namespace Recept.Pages.Read
         {
             try
             {
-                var jwtToken = HttpContext.Request.Cookies["myJwtCookie"];
+                var jwtToken = HttpContext.Request.Cookies["JWT"];
 
-                // Ellenõrizd a JWT tokent és kezeld megfelelõen
+ 
                 var handler = new JwtSecurityTokenHandler();
                 var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
 
-                // Ha eljutsz ide, a token helyes
-                // Most logold a szükséges információkat
+
                 var userId = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "name")?.Value;
-                // Logolj egy információt vagy rögzítsd a szükséges adatokat
+                
                 Console.WriteLine($"A JWT token elfogadva a felhasználó számára: {userId}");
 
                 if (IsDeleted)
@@ -87,7 +85,7 @@ namespace Recept.Pages.Read
             }
             catch (Exception ex)
             {
-                // Hiba történt a JWT token ellenõrzésekor
+                
                 Console.WriteLine($"Hiba a JWT token ellenõrzésekor: {ex.Message}");
                 RedirectToPage("/Account/Login");
             }

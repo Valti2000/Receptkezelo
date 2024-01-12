@@ -32,6 +32,8 @@ namespace Recept.Data
 
                 var adminRole = await roleManager.FindByNameAsync("Admin");
 
+                Console.WriteLine("adminRole: " + adminRole);
+
                 if (adminRole == null || (await userManager.GetUsersInRoleAsync("Admin")).Count == 0)
                 {
                     var adminUser = new ApplicationUser

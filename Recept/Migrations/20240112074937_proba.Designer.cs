@@ -12,7 +12,7 @@ using Recept.Data;
 namespace Recept.Migrations
 {
     [DbContext(typeof(ReceptekContext))]
-    [Migration("20240111164310_proba")]
+    [Migration("20240112074937_proba")]
     partial class proba
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

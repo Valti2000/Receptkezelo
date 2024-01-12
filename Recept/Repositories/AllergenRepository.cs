@@ -59,7 +59,6 @@ namespace Recept.Repositories
 
         public async Task<List<Allergen>> GetByAllergenIdsAsync(List<int> allergenIds)
         {
-            // Az allergének lekérése azonosítók alapján
             return await _dbContext.Allergenek
                 .Where(allergen => allergenIds.Contains(allergen.Id))
                 .ToListAsync();

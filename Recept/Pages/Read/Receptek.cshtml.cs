@@ -25,6 +25,11 @@ namespace Recept.Pages.Read
 
         public string ReceivedToken { get; set; } = string.Empty;
 
+        [BindProperty(SupportsGet = true)]
+        public string KivalasztottAlapanyag { get; set; } = string.Empty;
+
+        public List<string> OsszesAlapanyag { get; set; } = new List<string>();
+
         public ReceptekModel(IReceptRepository receptRepository, ReceptekContext dbContext)
         {
             _receptRepository = receptRepository;
@@ -35,11 +40,15 @@ namespace Recept.Pages.Read
 
         public async Task OnGetAsync()
         {
+
+            Console.WriteLine("KivalasztottAlapanyag: " + KivalasztottAlapanyag);
+
             var felhasznaloId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var jwtToken = HttpContext.User?.FindFirstValue("sub");
 
-            // Beállítjuk a ReceivedToken értékét
+            OsszesAlapanyag = await _dbContext.Alapanyagok.Select(h => h.Nev).Distinct().ToListAsync();
+
             ReceivedToken = jwtToken ?? string.Empty;
 
             Console.WriteLine("ReceivedToken: " + ReceivedToken);
@@ -61,15 +70,23 @@ namespace Recept.Pages.Read
 
         public async Task OnPostAsync()
         {
+            Console.WriteLine("KivalasztottAlapanyag in OnPostAsync: " + KivalasztottAlapanyag);
+
             if (IsDeleted)
             {
                 Receptek = await _dbContext.Receptek.IgnoreQueryFilters().ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(KivalasztottAlapanyag))
+            {
+                Console.WriteLine("Entered the condition for KivalasztottAlapanyag");
+                Receptek = await _receptRepository.GetReceptekByAlapanyagAsync(KivalasztottAlapanyag);
             }
             else
             {
                 Receptek = await _receptRepository.GetAllAsync();
             }
         }
+
 
 
         public async Task<List<Hozzavalo>> GetHozzavalokByReceptIdAsync(int receptId)
@@ -130,7 +147,6 @@ namespace Recept.Pages.Read
 
         public bool IsReceptKedvelt(int receptId, string felhasznaloId)
         {
-            // Ellenõrizzük, hogy a KedvencRecept táblában található-e adott recept és felhasználói azonosítóval
             return _dbContext.KedvencRecept.Any(k => k.ReceptId == receptId && k.UserId == felhasznaloId);
         }
 

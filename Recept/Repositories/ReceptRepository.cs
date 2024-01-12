@@ -19,7 +19,7 @@ namespace Recept.Repositories
         Task<List<Allergen>> GetAllergenekByReceptIdAsync(int AlapanyagId);
         Task ToggleKedvencAsync(string felhasznaloId, int receptId);
         Task<IEnumerable<Receptek>> GetKedvencReceptByUserIdAsync(string userId);
-
+        Task<IEnumerable<Receptek>> GetReceptekByAlapanyagAsync(string alapanyag);
     }
 
     public class ReceptRepository : IReceptRepository
@@ -87,17 +87,17 @@ namespace Recept.Repositories
 
         public async Task<List<Hozzavalo>> GetHozzavalokByReceptIdAsync(int receptId)
         {
-            if (receptId <= 0)
-            {
-                throw new ArgumentException("Invalid receptId");
-            }
+            var hozzavalok = await _dbContext.ReceptHozzavalo
+                .Where(rh => rh.ReceptId == receptId)
+                .Select(rh => rh.Hozzavalo)
+                .ToListAsync();
 
-            var receptHozzavaloList = await _receptHozzavaloRepository.GetByReceptIdAsync(receptId);
+            Console.WriteLine($"Hozzávalók a(z) {receptId} recepthez: {string.Join(", ", hozzavalok.Select(h => h.Nev))}");
 
-            var hozzavaloList = receptHozzavaloList.Select(rh => rh.Hozzavalo).ToList();
-
-            return hozzavaloList;
+            return hozzavalok;
         }
+
+
 
         public async Task<List<Allergen>> GetAllergenekByReceptIdAsync(int AlapanyagId)
         {
@@ -150,6 +150,20 @@ namespace Recept.Repositories
             return kedvencReceptek.Select(kr => kr.Recept).ToList();
         }
 
+        public async Task<IEnumerable<Receptek>> GetReceptekByAlapanyagAsync(string alapanyag)
+        {
+            var receptek = await _dbContext.Receptek
+                .Where(r => r.ReceptHozzavalok
+                    .Any(h => h.Hozzavalo.Alapanyag.Nev.Contains(alapanyag))) //hiba
+                .ToListAsync();
 
+            Console.WriteLine("Receptek:");
+            foreach (var recept in receptek)
+            {
+                Console.WriteLine($"Recept: {recept.Cim}");
+            }
+
+            return receptek;
+        }
     }
 }

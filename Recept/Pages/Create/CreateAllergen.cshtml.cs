@@ -25,7 +25,6 @@ namespace Recept.Pages.Create
 
         public void OnGet()
         {
-            // Itt lehet inicializációt végezni, ha szükséges
         }
 
         public async Task<IActionResult> OnPostAsync()

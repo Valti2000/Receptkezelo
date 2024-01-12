@@ -55,7 +55,7 @@ namespace Recept.Repositories
 
         public async Task<List<ReceptHozzavalo>> GetHozzavalokAsync()
         {
-            return await _context.ReceptHozzavalo.ToListAsync(); // Az adatbázisban tárolt ReceptHozzavalo-k lekérdezése
+            return await _context.ReceptHozzavalo.ToListAsync(); 
         }
 
         public async Task DeleteByReceptIdAsync(int receptId)

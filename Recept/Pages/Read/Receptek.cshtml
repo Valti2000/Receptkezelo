@@ -17,6 +17,19 @@
     <button type="submit">@(!Model.CsakKedvencek ? "Csak kedvencek" : "Összes recept")</button>
 </form>
 
+<form method="post" asp-page="/Read/Receptek">
+    <label for="kivalasztottAlapanyag">Válassz alapanyagot:</label>
+    <select id="kivalasztottAlapanyag" name="KivalasztottAlapanyag">
+        <option value="">-- Válassz alapanyagot --</option>
+        @foreach (var alapanyag in Model.OsszesAlapanyag)
+        {
+            <option value="@alapanyag">@alapanyag</option>
+        }
+    </select>
+    <button type="submit">Szűrés Alapanyag szerint</button>
+</form>
+
+
 <form method="post" onsubmit="saveCheckboxState()">
     <div>
         <label for="includeDeletedCheckbox">Törölt elemek mutatása</label>
@@ -71,7 +84,7 @@
 
                     <form method="post" asp-page="/Read/Receptek" asp-page-handler="@handler">
                         <input type="hidden" name="receptId" value="@recept.Id" />
-                        <input type="hidden" name="jwtToken" value="ReceivedToken" /> <!-- Új sor -->
+                        <input type="hidden" name="jwtToken" value="ReceivedToken" /> 
                         <button type="submit">@buttonText</button>
                     </form>
                 </td>
